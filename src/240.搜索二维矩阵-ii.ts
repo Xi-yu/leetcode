@@ -61,10 +61,11 @@
 // 对每一行进行二分查找
 // 时间: O(mlogn)
 // 空间: O(1)
-function searchMatrix(matrix: number[][], target: number): boolean {
+function searchMatrix1(matrix: number[][], target: number): boolean {
   const m = matrix.length;
   const n = matrix[0].length;
   if (target < matrix[0][0] || target > matrix[m - 1][n - 1]) {
+    // 如果比左上角小或者比右下角大，直接返回false
     return false;
   }
   for (let i = 0; i < m - 1; i++) {
@@ -84,6 +85,36 @@ function searchMatrix(matrix: number[][], target: number): boolean {
         // 比目标小，更新左断点
         left = mid + 1;
       }
+    }
+  }
+  // 所有数据都遍历完了，没找到
+  return false;
+}
+
+// Z字形查找
+// 时间: O(m+n)
+// 空间: O(1)
+function searchMatrix(matrix: number[][], target: number): boolean {
+  const m = matrix.length;
+  const n = matrix[0].length;
+  if (target < matrix[0][0] || target > matrix[m - 1][n - 1]) {
+    // 如果比左上角小或者比右下角大，直接返回false
+    return false;
+  }
+  let x = 0,
+    y = n - 1;
+  // 从右上角开始比较
+  while (x < m && y >= 0) {
+    if (matrix[x][y] === target) {
+      return true; // 找到了
+    }
+    if (matrix[x][y] > target) {
+      // 如果右上角比target大
+      // 则y列左移
+      y--;
+    } else {
+      // 否则，x行下移
+      x++;
     }
   }
   // 所有数据都遍历完了，没找到
