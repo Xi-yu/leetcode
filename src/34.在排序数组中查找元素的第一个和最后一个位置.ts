@@ -90,16 +90,40 @@ function searchRange1(nums: number[], target: number): number[] {
 // 空间: O(1)
 function searchRange(nums: number[], target: number): number[] {
   const n: number = nums.length;
-  const ans: number[] = [-1 - 1];
+  const ans: number[] = [-1, -1];
   // 第一次二分查找
   let left: number = 0,
     right: number = n - 1;
-  while (left < right) {}
+  while (left < right) {
+    const mid = (left + right) >> 1;
+    if (nums[mid] < target) {
+      left = mid + 1;
+    } else if (nums[mid] === target) {
+      right = mid;
+    } else {
+      right = mid - 1;
+    }
+  }
+  if (nums[left] === target) {
+    ans[0] = left;
+  } else {
+    return ans;
+  }
 
   // 第二次二分查找
   left = 0;
   right = n - 1;
-  while (left < right) {}
+  while (left < right) {
+    const mid = (left + right + 1) >> 1;
+    if (nums[mid] < target) {
+      left = mid + 1;
+    } else if (nums[mid] === target) {
+      left = mid;
+    } else {
+      right = mid - 1;
+    }
+  }
+  ans[1] = left;
   return ans;
 }
 // @lc code=end
