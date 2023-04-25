@@ -54,7 +54,7 @@
 // @lc code=start
 // 首先明确一点，因为nums[-1]和nums[length]是负无穷，并且相邻两数不同，所以峰值元素一定存在
 // 直接遍历比较
-// 从左到右遍历，因为相邻的数字不相等，所以找到第一个nums[i] > nums[i + 1]，i就是答案
+// 从左到右遍历，因为相邻的数字不相等，所以找到第一个nums[i] > nums[i + 1]，说明要下坡了，下坡之前一定是在山顶，nums[i]就是峰值之一
 // 时间: O(n)
 // 空间: O(1)
 function findPeakElement1(nums: number[]): number {
