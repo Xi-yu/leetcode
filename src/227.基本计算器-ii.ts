@@ -60,8 +60,8 @@
 
 // @lc code=start
 // 栈，乘除优先计算
-// 时间: O()
-// 空间: O()
+// 时间: O(n)
+// 空间: O(n)
 function calculate(s: string): number {
   // 如果当前字符是'+'，将后面的数字，push到stack中
   // 如果当前字符是'-'，将后面的数字的负数，push到stack中
