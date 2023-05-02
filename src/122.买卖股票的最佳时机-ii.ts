@@ -86,7 +86,7 @@ function maxProfit1(prices: number[]): number {
 // dp - 空间优化(滚动数组)
 // 时间: O(n)
 // 空间: O(2)
-function maxProfit(prices: number[]): number {
+function maxProfit2(prices: number[]): number {
   const len: number = prices.length;
   const dp: number[] = new Array(2).fill(0);
   dp[0] = 0;
@@ -97,5 +97,17 @@ function maxProfit(prices: number[]): number {
     dp[1] = Math.max(dp[1], temp - prices[i]);
   }
   return dp[0];
+}
+
+// 贪心
+// 时间: O(n)
+// 空间: O(1)
+function maxProfit(prices: number[]): number {
+  const len: number = prices.length;
+  let ans: number = 0;
+  for (let i = 1; i < len; i++) {
+    ans += Math.max(0, prices[i] - prices[i - 1]);
+  }
+  return ans;
 }
 // @lc code=end
