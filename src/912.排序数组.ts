@@ -191,33 +191,22 @@ function quickSort(nums: number[], start: number, end: number): void {
   quickSort(nums, mid + 1, end); // 递归处理mid右侧的部分
 }
 function randomPartition(nums: number[], start: number, end: number): number {
-  // 随机获取pivot
-  const pivotIndex: number =
-    start + Math.floor(Math.random() * (end - start + 1));
-  // pivot放在最左边
-  [nums[start], nums[pivotIndex]] = [nums[pivotIndex], nums[start]];
-  // 划分数组未前后两部分
-  // 前部分小于pivot
-  // 后部分大于pivot
-  const pivot = nums[start];
-  let i = start,
-    j = end;
-  while (i < j) {
-    // 找到右边第一个小于pivot
-    while (i < j && nums[j] >= pivot) {
-      j--;
-    }
-    // j移动到i
-    nums[i] = nums[j];
-    // 找到左边第一个大于pivot
-    while (i < j && nums[i] <= pivot) {
+  // 随机获取mid
+  const mid: number = start + Math.floor(Math.random() * (end - start + 1));
+  const midVal = nums[mid];
+  // 先把mid移到最后位置
+  [nums[mid], nums[end]] = [nums[end], nums[mid]];
+  // 定义两个指针
+  let i = start - 1,
+    j = start;
+  for (; j < end; j++) {
+    if (nums[j] <= midVal) {
       i++;
+      [nums[i], nums[j]] = [nums[j], nums[i]];
     }
-    // i移动到j
-    nums[j] = nums[i];
   }
-  // 循环结束, i===j, 即是中间点
-  nums[i] = pivot;
-  return i;
+  // 将midVal与第一个大于他的数交换
+  [nums[end], nums[i + 1]] = [nums[i + 1], nums[end]];
+  return i + 1;
 }
 // @lc code=end
