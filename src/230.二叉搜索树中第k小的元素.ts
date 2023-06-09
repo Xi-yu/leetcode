@@ -67,7 +67,6 @@
 // 时间: O(n)
 // 空间: O(n)
 function kthSmallest(root: TreeNode | null, k: number): number {
-  const arr: number[] = [];
   const stack: TreeNode[] = [];
   while (root || stack.length) {
     while (root) {
@@ -75,10 +74,13 @@ function kthSmallest(root: TreeNode | null, k: number): number {
       root = root.left;
     }
     root = stack.pop();
-    arr.push(root.val);
+    k--;
+    if (k === 0) {
+      break;
+    }
     root = root.right;
   }
 
-  return arr[k - 1];
+  return root.val;
 }
 // @lc code=end
