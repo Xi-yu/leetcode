@@ -63,10 +63,10 @@
  *     }
  * }
  */
-// 左根右遍历二叉树，结果就是从小到大排列的数组
-// 时间: O(n)
-// 空间: O(n)
-function kthSmallest(root: TreeNode | null, k: number): number {
+// 中序（左根右）遍历二叉树，结果就是从小到大排列的数组
+// 时间: O(logn+k)
+// 空间: O(logn)
+function kthSmallest1(root: TreeNode | null, k: number): number {
   const stack: TreeNode[] = [];
   while (root || stack.length) {
     while (root) {
@@ -82,5 +82,53 @@ function kthSmallest(root: TreeNode | null, k: number): number {
   }
 
   return root.val;
+}
+
+// 如果要频繁的查找，需要先遍历一次二叉树，记录所有节点的子节点数量（包括节点自己）
+// 然后每次查找只需要logn的时间复杂度
+// 时间: O(n+logn)
+// 空间: O(n)
+function kthSmallest(root: TreeNode | null, k: number): number {
+  const binaryCount = new BinaryCount(root);
+  return binaryCount.kthSmallest(k);
+}
+
+class BinaryCount {
+  root: TreeNode;
+  nodeCountHash: Map<TreeNode, number>;
+  constructor(root) {
+    this.root = root;
+    this.nodeCountHash = new Map();
+    this.count(this.root);
+  }
+  count(node: TreeNode): number {
+    let count = 0;
+    if (node) {
+      count = 1 + this.count(node.left) + this.count(node.right);
+    }
+    this.nodeCountHash.set(node, count);
+    return this.nodeCountHash.get(node) || 0;
+  }
+  kthSmallest(k: number): number {
+    let cur = this.root;
+    while (cur) {
+      // 该节点的左子树的节点数量
+      const leftCount = this.nodeCountHash.get(cur.left) || 0;
+      if (k === leftCount + 1) {
+        // 如果该节点的左子树的数量+1===k，表示该节点就是第k小的节点
+        return cur.val;
+      } else if (k < leftCount + 1) {
+        // 如果该节点的左子树的数量+1>k，表示第k小的节点在该节点的左子树中，继续遍历其左子树
+        cur = cur.left;
+      } else {
+        // 如果该节点的左子树的数量+1<k，表示第k小的节点在该节点的右子树中，继续遍历其右子树
+        // 但是需要更新k，因为左子树所有的节点都比第k小的节点小，所以需要把左子树的节点排除在外
+        // 所以，就是找其右子树中第k-leftCount-1小的节点了
+        k = k - leftCount - 1;
+        cur = cur.right;
+      }
+    }
+    return 0;
+  }
 }
 // @lc code=end
