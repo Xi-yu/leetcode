@@ -56,5 +56,35 @@
  */
 
 // @lc code=start
-function jump(nums: number[]): number {}
+// 贪心
+// 时间: O(n)
+// 空间: O(1)
+function jump(nums: number[]): number {
+  const len: number = nums.length;
+  let ans: number = 0;
+  for (let i = 0; i < len - 1; ) {
+    // 当前位置能跳跃的最远位置
+    const curMax: number = i + nums[i];
+    // 如果已经覆盖了最后一个位置，则跳到最后一个位置，退出遍历
+    if (curMax >= len - 1) {
+      ans++;
+      break;
+    }
+    // 否则，寻找应该跳到哪个位置，下一次能跳的更远
+    let nextMax = 0;
+    let nextMaxIndex = -1;
+    for (let j = i + 1; j <= curMax; j++) {
+      const next = j + nums[j];
+      if (next > nextMax) {
+        // 找到下一次哪个能跳的更远
+        nextMax = next;
+        nextMaxIndex = j;
+      }
+    }
+    // 跳到下一次能跳的更远的位置
+    i = nextMaxIndex;
+    ans++;
+  }
+  return ans;
+}
 // @lc code=end
