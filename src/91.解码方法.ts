@@ -105,24 +105,52 @@ function numDecodings1(s: string): number {
 // dp
 // 时间: O(n)
 // 空间: O(n)
-function numDecodings(s: string): number {
+function numDecodings2(s: string): number {
   const len = s.length;
-  const dp: number[] = new Array(len + 1).fill(0);
-  dp[1] = s[0] === "0" ? 0 : 1;
+  const dp: number[] = new Array(len).fill(0);
+  dp[0] = s[0] === "0" ? 0 : 1;
 
   for (let i = 1; i <= len; i++) {
     let cur = 0;
     // 最后一次，选一个
     if (s[i] !== "0") {
+      // 如果最后一次可以选一个，则跟i-1的最大选择次数一样
       cur += dp[i - 1];
     }
     // 最后一次，选两个
     if (s[i - 1] !== "0" && Number(s[i - 1]) * 10 + Number(s[i]) <= 26) {
-      cur += dp[i - 2];
+      // 如果最后一次可以选两个，则跟i-2的最大选择次数一样
+      // 特殊情况：i-2<0时，算作1次
+      cur += i - 2 < 0 ? 1 : dp[i - 2];
     }
     dp[i] = cur;
   }
 
-  return dp[len];
+  return dp[len - 1];
+}
+
+// dp - 空间优化
+// 时间: O(n)
+// 空间: O(1)
+function numDecodings(s: string): number {
+  const len = s.length;
+  let pprev = 1;
+  let prev = s[0] === "0" ? 0 : 1;
+
+  for (let i = 1; i <= len; i++) {
+    let cur = 0;
+    // 最后一次，选一个
+    if (s[i] !== "0") {
+      cur += prev;
+    }
+    // 最后一次，选两个
+    if (s[i - 1] !== "0" && Number(s[i - 1]) * 10 + Number(s[i]) <= 26) {
+      cur += pprev;
+    }
+    pprev = prev;
+    prev = cur;
+  }
+
+  return prev;
 }
 // @lc code=end
