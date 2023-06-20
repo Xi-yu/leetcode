@@ -72,7 +72,7 @@
  */
 // 先翻转，再相加
 // 时间: O(max(n1,n2))
-// 空间: O(max(n1,n2))
+// 空间: O(n1+n2)
 function addTwoNumbers1(
   l1: ListNode | null,
   l2: ListNode | null
@@ -120,11 +120,38 @@ function addTwoNumbers1(
   return prev;
 }
 
-// 先翻转，再相加
+// 栈
 // 时间: O(max(n1,n2))
-// 空间: O(max(n1,n2))
+// 空间: O(n1+n2)
 function addTwoNumbers(
   l1: ListNode | null,
   l2: ListNode | null
-): ListNode | null {}
+): ListNode | null {
+  const stack1: number[] = []; // 装l1链表每个节点的值
+  const stack2: number[] = []; // 装l2链表每个节点的值
+  while (l1) {
+    stack1.push(l1.val);
+    l1 = l1.next;
+  }
+  while (l2) {
+    stack2.push(l2.val);
+    l2 = l2.next;
+  }
+  // 遍历两个栈，依次出栈值相加
+  let prev = null;
+  let add = 0;
+  while (stack1.length || stack2.length) {
+    const val = (stack1.pop() || 0) + (stack2.pop() || 0) + add;
+    const cur = new ListNode(val % 10);
+    cur.next = prev;
+    prev = cur;
+    add = Math.floor(val / 10);
+  }
+  if (add) {
+    const cur = new ListNode(add);
+    cur.next = prev;
+    prev = cur;
+  }
+  return prev;
+}
 // @lc code=end
