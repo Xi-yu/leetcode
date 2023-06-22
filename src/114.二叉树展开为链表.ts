@@ -101,11 +101,26 @@ function flatten1(root: TreeNode | null): void {
 
 // 前序遍历和创建链表同时进行
 // 时间: O(n)
-// 空间: O(1)
+// 空间: O(n)
 function flatten(root: TreeNode | null): void {
   const stack: TreeNode[] = [];
-  while (root || stack.length) {
-    while (root) {}
+  if (root) {
+    stack.push(root);
+  }
+  let prev: TreeNode | null = null;
+  while (stack.length) {
+    const cur = stack.pop();
+    if (prev !== null) {
+      prev.left = null;
+      prev.right = cur;
+    }
+    prev = cur;
+    if (cur.right) {
+      stack.push(cur.right);
+    }
+    if (cur.left) {
+      stack.push(cur.left);
+    }
   }
 }
 // @lc code=end
