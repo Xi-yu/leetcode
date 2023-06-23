@@ -81,9 +81,9 @@ class Trie {
         next = new TrieNode(c);
         cur.children.push(next);
       }
-      next.isEnd = next.isEnd || i === word.length - 1;
       cur = next;
     }
+    cur.isEnd = true;
   }
 
   // 时间: O(n)
