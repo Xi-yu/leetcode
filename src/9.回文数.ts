@@ -64,12 +64,18 @@
 // 数字翻转后比较
 // 时间: O(logx)
 // 空间: O(1)
-function isPalindrome(x: number): boolean {
+function isPalindrome1(x: number): boolean {
+  // 负数，返回false
   if (x < 0) {
     return false;
   }
+  // 一位数字，返回true
   if (x >= 0 && x <= 9) {
     return true;
+  }
+  // 不是一位数字，并且最后一位数字是0，返回false
+  if (x > 9 && x % 10 === 0) {
+    return false;
   }
   let ans = 0;
   let cur = x;
@@ -78,5 +84,29 @@ function isPalindrome(x: number): boolean {
     cur = Math.floor(cur / 10);
   }
   return ans === x;
+}
+
+// 数字翻转后比较 - 只翻转一半
+// 时间: O(logx)
+// 空间: O(1)
+function isPalindrome(x: number): boolean {
+  // 负数，返回false
+  if (x < 0) {
+    return false;
+  }
+  // 一位数字，返回true
+  if (x >= 0 && x <= 9) {
+    return true;
+  }
+  // 不是一位数字，并且最后一位数字是0，返回false
+  if (x > 9 && x % 10 === 0) {
+    return false;
+  }
+  let reversedNum = 0;
+  while (x > reversedNum) {
+    reversedNum = reversedNum * 10 + (x % 10);
+    x = Math.floor(x / 10);
+  }
+  return x === reversedNum || Math.floor(reversedNum / 10) === x;
 }
 // @lc code=end
