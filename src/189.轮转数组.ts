@@ -62,15 +62,18 @@
 /**
  Do not return anything, modify nums in-place instead.
  */
-// 复制拼接后，截取旋转后的部分
-// 时间: O(n)
+// 使用额外数组保存旋转后的状态，然后复制给原数组
+// 下标i要移动到(i+k)mod(n)下标处
+// 时间: O(2n)
 // 空间: O(n)
 function rotate(nums: number[], k: number): void {
   const len = nums.length;
-  k %= len;
-  const tempArr = [...nums, ...nums];
+  const tempArr = new Array(len);
   for (let i = 0; i < len; i++) {
-    nums[i] = tempArr[len - k + i];
+    tempArr[(i + k) % len] = nums[i];
+  }
+  for (let i = 0; i < len; i++) {
+    nums[i] = tempArr[i];
   }
 }
 // @lc code=end
