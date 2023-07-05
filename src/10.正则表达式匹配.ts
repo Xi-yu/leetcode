@@ -68,12 +68,17 @@
 function isMatch(s: string, p: string): boolean {
   const m = s.length;
   const n = p.length;
+  // p的第j位不是'*'时，判断s的第i位字符 和 p的第j位字符 是否匹配
   const matches = (i: number, j: number): boolean => {
     if (i === 0) {
       // s的第0位是空字符串，与p中的任意非0位置都不匹配
+      // 并且j是从1开始遍历的，所以可以直接返回false
       return false;
     }
+    // i和j表示的是第几位字符
+    // 转化为下标的话，需要减1
     if (p[j - 1] === ".") {
+      // '.'和任意字符都是匹配的
       return true;
     }
     return s[i - 1] === p[j - 1];
@@ -97,13 +102,15 @@ function isMatch(s: string, p: string): boolean {
         // p的第一位不可能是'*'，所以 j >= 2，所以 j - 2 >= 0
         if (matches(i, j - 1)) {
           // 如果s的第i位和p的第j-1位匹配
+          // 要么 p的第j-1位字符出现0次，即dp[i][j-2]
+          // 要么 p的第j-1位字符出现多次，即dp[i-1][j]
           dp[i][j] = dp[i][j - 2] || dp[i - 1][j];
         } else {
           // 如果s的第i位和p的第j-1位不匹配
+          // 只能p的第j-1位字符出现0次，即dp[i][j-2]
           dp[i][j] = dp[i][j - 2];
         }
       } else {
-        // 如果p的第j个字符是 '.' 或者 小写字母
         if (matches(i, j)) {
           // 如果s的第i位和p的第j位匹配
           dp[i][j] = dp[i - 1][j - 1];
