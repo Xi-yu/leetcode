@@ -50,7 +50,7 @@
 // 哈希+大顶堆
 // 时间: O(n+n*logn+k*logn = nlogn)
 // 空间: O(n)
-function topKFrequent(nums: number[], k: number): number[] {
+function topKFrequent1(nums: number[], k: number): number[] {
   // 新建一个哈希，保存每个数和其出现次数的键值对
   // 时间: O(n) 空间: O(n)
   const hash: Map<number, number> = new Map();
@@ -152,6 +152,119 @@ class MaxHeap {
       } else {
         break;
       }
+    }
+  }
+}
+
+// 哈希+小顶堆
+// 时间: O(nlogk)
+// 空间: O(n)
+function topKFrequent(nums: number[], k: number): number[] {
+  // 新建一个哈希，保存数字和出现次数的键值对
+  // 时间: O(n) 空间: O(n)
+  const hash = new Map();
+  for (const n of nums) {
+    hash.set(n, (hash.get(n) || 0) + 1);
+  }
+  // 新建小顶堆
+  // 时间: O(1) 空间: O(1)
+  const minHeap = new MinHeap([]);
+  // 遍历哈希，将数字和出现次数push到小顶堆中
+  // 时间: O(n*logk) 空间: O(1)
+  hash.forEach((v, key) => {
+    minHeap.push([key, v]);
+    // 如果小顶堆的元素数量超过k了，则堆顶元素一定不属于前k个
+    if (minHeap.len() > k) {
+      minHeap.pop();
+    }
+  });
+
+  // 哈希遍历结束，小顶堆中的元素就是前k个高频元素
+  // 时间: O(k) 空间: O(1)
+  const ans: number[] = [];
+  for (const [k] of minHeap.heap) {
+    ans.push(k);
+  }
+
+  return ans;
+}
+// 小顶堆
+class MinHeap {
+  heap: number[][];
+  constructor(arr: number[][]) {
+    this.heap = arr;
+    this.buildHeap();
+  }
+  len() {
+    return this.heap.length;
+  }
+  buildHeap() {
+    const len = this.len();
+    if (len < 2) {
+      return;
+    }
+    const startIndex = (len >> 1) - 1;
+    for (let i = startIndex; i >= 0; i--) {
+      this.siftDown(i);
+    }
+  }
+  siftDown(startIndex: number) {
+    const len = this.len();
+    let i = startIndex;
+    while ((i << 1) + 1 <= len - 1) {
+      let swapIndex = i;
+      const leftChildIndex = (i << 1) + 1;
+      const rightChildIndex = leftChildIndex + 1;
+      if (this.heap[leftChildIndex][1] < this.heap[swapIndex][1]) {
+        swapIndex = leftChildIndex;
+      }
+      if (
+        rightChildIndex <= len - 1 &&
+        this.heap[rightChildIndex][1] < this.heap[swapIndex][1]
+      ) {
+        swapIndex = rightChildIndex;
+      }
+      if (i !== swapIndex) {
+        [this.heap[i], this.heap[swapIndex]] = [
+          this.heap[swapIndex],
+          this.heap[i],
+        ];
+        i = swapIndex;
+      } else {
+        break;
+      }
+    }
+  }
+  push(n: number[]) {
+    this.heap.push(n);
+    this.siftUp();
+  }
+  siftUp() {
+    let i = this.len() - 1;
+    while (i > 0) {
+      const parentIndex = (i - 1) >> 1;
+      if (this.heap[parentIndex][1] > this.heap[i][1]) {
+        [this.heap[i], this.heap[parentIndex]] = [
+          this.heap[parentIndex],
+          this.heap[i],
+        ];
+        i = parentIndex;
+      } else {
+        break;
+      }
+    }
+  }
+  pop() {
+    const first = this.heap[0];
+    if (first !== undefined) {
+      const last = this.heap.pop() as number[];
+      if (first !== last) {
+        this.heap[0] = last;
+        this.siftDown(0);
+      }
+      return first;
+    } else {
+      return [];
     }
   }
 }
