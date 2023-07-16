@@ -69,36 +69,50 @@
 
 // @lc code=start
 // 回溯递归
-// 时间: O(n^3)
-// 空间: O(logn*n^3)
+// 时间: O(1)
+// 空间: O(1)
+const accuracy = Math.pow(10, -6); // 因为除法会出现精度问题，所以判断精度小于10^-6时就认为是0
+// 加减乘除运算函数数组
+const opfns = [
+  (a: number, b: number) => a + b,
+  (a: number, b: number) => a * b,
+  (a: number, b: number) => a - b,
+  (a: number, b: number) => a / b,
+];
 function judgePoint24(cards: number[]): boolean {
   let ans = false;
-  const opfns = [
-    (a: number, b: number) => a + b,
-    (a: number, b: number) => a - b,
-    (a: number, b: number) => a * b,
-    (a: number, b: number) => a / b,
-  ];
+
+  // 回溯递归函数
   function backtrack(cur: number[]) {
     if (ans) {
+      // 如果已经找到等于24的情况了，直接结束函数递归
       return;
     }
     if (cur.length === 1) {
-      if (Math.abs(cur[0] - 24) < 0.0000000000001) {
+      // 如果只剩一个数字了，这次递归就结束了
+      if (Math.abs(cur[0] - 24) < accuracy) {
+        // 如果该数字与24的差的绝对值小于10^-6，就认为两者相等
         ans = true;
       }
       return;
     }
+    // 遍历从当前数组中选出两个数字的所有情况
     for (let i = 0; i < cur.length - 1; i++) {
       for (let j = i + 1; j < cur.length; j++) {
+        // 删除选出来的两个数字，这是下一次递归的数组
         const temp = removeItemFromArr(cur, i, j);
         for (let k = 0; k < 4; k++) {
+          // 将计算结果放入数组
           temp.push(opfns[k](cur[i], cur[j]));
           backtrack(temp);
+          // 递归结束，回溯，恢复数组，开始下一次递归
           temp.pop();
-          if (k === 1 || k === 3) {
+          // 遍历四种运算情况，减法和除法两个数字交换后结果不一样，所以减法和除法需要交换两个数字后再递归一次
+          if (k === 2 || k === 3) {
+            // 将计算结果放入数组
             temp.push(opfns[k](cur[j], cur[i]));
             backtrack(temp);
+            // 递归结束，回溯，恢复数组，开始下一次递归
             temp.pop();
           }
         }
