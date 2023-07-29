@@ -29,7 +29,7 @@
  *
  *
  * 输入：nums = [0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1], K = 3
- *             [0,0,1,2,2,2,3,4,5,5,6,7,7,7,7,8,9,10,11]
+ *             [1,2,2,2,3,4,4,4,4,5,5,5,6,7,8,8,8,8,8]
  * 输出：10
  * 解释：[0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1]
  * 粗体数字从 0 翻转到 1，最长的子数组长度为 10。
@@ -47,7 +47,7 @@
  */
 
 // @lc code=start
-// 滑动窗口
+// 暴力
 // 时间: O(n^2)
 // 空间: O(1)
 function longestOnes1(nums: number[], k: number): number {
@@ -63,6 +63,7 @@ function longestOnes1(nums: number[], k: number): number {
     }
     let j = i,
       n = k;
+    // 找到包含不超过k个0的右端点
     while (j < len && n >= 0) {
       if (nums[j] === 0) {
         n--;
@@ -84,20 +85,40 @@ function longestOnes1(nums: number[], k: number): number {
 }
 
 // 滑动窗口+前缀和
-// 时间: O()
-// 空间: O()
-function longestOnes(nums: number[], k: number): number {
+// 时间: O(2n)
+// 空间: O(n)
+function longestOnes2(nums: number[], k: number): number {
   const len = nums.length;
-  const sums: number[] = new Array(len);
-  sums[0] = nums[0];
+  const sums: number[] = new Array(len + 1).fill(0);
+  sums[1] = nums[0] === 0 ? 1 : 0;
 
+  // 0变1，1变0，生成前缀和
+  // [i,j]区间内0的个数 = sums[j] - sums[i-1]
   for (let i = 1; i < len; i++) {
-    sums[i] = nums[i] + sums[i - 1];
+    if (nums[i] === 0) {
+      sums[i + 1] = sums[i] + 1;
+    } else {
+      sums[i + 1] = sums[i];
+    }
   }
 
   let ans = 0;
 
-  for (let i = 0; i < len; i++) {}
+  // 双指针，滑动窗口
+  for (let i = 1, j = 1; j <= len; ) {
+    if (sums[j] - sums[i - 1] <= k) {
+      // 如果[i,j]区间没有超过k个0，j向右移动
+      // 并且更新答案
+      ans = Math.max(ans, j - i + 1);
+      j++;
+    } else if (i <= j) {
+      // 如果[i,j]区间超过k个0，并且i<=j，i向右移动
+      i++;
+    } else {
+      // 否则，j向右移动，看后面还有没有不超过k个0的区间
+      j++;
+    }
+  }
 
   return ans;
 }
