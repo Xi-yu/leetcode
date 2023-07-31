@@ -46,16 +46,19 @@
 // 时间: O(2n)
 // 空间: O(n)
 function removeDuplicates(s: string): string {
-  const len = s.length;
   const stack: string[] = [];
 
   for (const c of s) {
     if (stack.length > 0 && stack[stack.length - 1] === c) {
+      // 如果当前字符与栈顶字符相同就出栈（pop），然后判断下一个字符
       stack.pop();
       continue;
     }
+    // 否则，入栈（push）
     stack.push(c);
   }
+
+  // 栈中剩余字符合起来就是答案
   return stack.join("");
 }
 // @lc code=end
