@@ -73,10 +73,11 @@ function minDepth1(root: TreeNode | null): number {
 
   while (queue.length) {
     const len = queue.length;
+    // 遍历当前层，看是否存在叶子节点
     for (let i = 0; i < len; i++) {
       const cur = queue.shift() as TreeNode;
       if (!cur.left && !cur.right) {
-        // 叶子节点，结束循环
+        // 存在叶子节点，结束循环
         queue = [];
         break;
       }
@@ -87,6 +88,7 @@ function minDepth1(root: TreeNode | null): number {
         queue.push(cur.right);
       }
     }
+    // 不存在叶子节点，深度+1，继续遍历下一层
     ans++;
   }
 
@@ -98,24 +100,28 @@ function minDepth1(root: TreeNode | null): number {
 // 空间: O(logn)
 function minDepth(root: TreeNode | null): number {
   if (!root) {
+    // 只有根节点为空才会进入这个判断，停止递归，返回深度0
     return 0;
   }
 
   if (!root.left && !root.right) {
+    // 如果当前节点不为空，但是没有左右节点，该节点就是叶子节点，停止递归，返回深度1
     return 1;
   }
 
   let leftDepth = Number.MAX_SAFE_INTEGER;
   if (root.left) {
+    // 左子树的最小深度
     leftDepth = minDepth(root.left);
   }
 
   let rightDepth = Number.MAX_SAFE_INTEGER;
   if (root.right) {
+    // 右子树的最小深度
     rightDepth = minDepth(root.right);
   }
 
+  // 取左右子树较小的那个，再+1（当前节点有1的深度）
   return Math.min(leftDepth, rightDepth) + 1;
 }
-
 // @lc code=end
