@@ -108,7 +108,7 @@ function triangleNumber2(nums: number[]): number {
 }
 
 // 排序+双指针
-// 时间: O(nlogn+)
+// 时间: O(nlogn+n*2n)
 // 空间: O(logn)
 function triangleNumber(nums: number[]): number {
   const len = nums.length;
