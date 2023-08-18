@@ -72,8 +72,8 @@ function lengthOfLIS1(nums: number[]): number {
 
   for (let i = 1; i < len; i++) {
     for (let j = i - 1; j >= 0; j--) {
-      // 将第i位与前面所有比较
-      // 如果第j位的数字，就取dp[j]+1与dp[i]的较大者
+      // 将第i位与前面所有比较，找到最长的上升子序列
+      // 如果第j位的数字比nums[i]小，dp[j]加上nums[i]就是一种以nums[i]结尾的上升子序列，就取dp[j]+1与dp[i]的较大者
       if (nums[i] > nums[j]) {
         dp[i] = Math.max(dp[i], dp[j] + 1);
       }
