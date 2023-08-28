@@ -52,7 +52,7 @@
 // dp
 // 时间: O(n^2)
 // 空间: O(2n)
-function findNumberOfLIS(nums: number[]): number {
+function findNumberOfLIS1(nums: number[]): number {
   const len = nums.length;
   // dp[i]表示：以nums[i]结尾时的最长上升子序列的长度（nums[i]必选）
   // 初始值为1：因为至少有一个长度为1的最长上升子序列（就是nums[i]自己）
@@ -90,4 +90,9 @@ function findNumberOfLIS(nums: number[]): number {
 
   return ans;
 }
+
+// 贪心+前缀和+二分
+// 时间: O(nlogn)
+// 空间: O(2n)
+function findNumberOfLIS(nums: number[]): number {}
 // @lc code=end
