@@ -67,7 +67,24 @@ function numSquares1(n: number): number {
 }
 
 // dp - 优化
-// 时间: O()
-// 空间: O()
-function numSquares(n: number): number {}
+// 时间: O(n√n)
+// 空间: O(n)
+function numSquares(n: number): number {
+  // dp[i]: 和为i(0<i<=n)的完全平方数的最小数量, 默认为i(最坏情况完全平方数全是1)
+  const dp: number[] = new Array(n + 1).fill(0).map((_, i) => i);
+
+  for (let i = 1; i <= n; i++) {
+    if (Math.sqrt(i) % 1 === 0) {
+      // 如果根号i是整数, 那么和为i的完全平方数的最小数量为1(完全平方数就是一个i)
+      dp[i] = 1;
+    } else {
+      // 只需要遍历[1,√i)
+      for (let j = 1; j * j < i; j++) {
+        dp[i] = Math.min(dp[i], dp[i - j * j] + 1);
+      }
+    }
+  }
+
+  return dp[n];
+}
 // @lc code=end
