@@ -77,17 +77,22 @@ function compress(chars: string[]): number {
   let k = 1; // 遍历位置结束下标
 
   for (; j < len; ) {
+    // 寻找下标j字符的重复数
     while (k < len && chars[j] === chars[k]) {
       k++;
     }
+    // 先更新遍历到哪个字符了
     chars[i++] = chars[j];
+    // 再判断该字符重复次数是否超过1
     if (k - j > 1) {
       // 重复超过1次
+      // 就需要将次数更新到对应的位置
       const countStr = String(k - j);
       for (const c of countStr) {
         chars[i++] = c;
       }
     }
+    // 更新j和k
     j = k;
     k++;
   }
