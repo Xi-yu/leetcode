@@ -73,7 +73,29 @@ function nextGreaterElements1(nums: number[]): number[] {
 }
 
 // 单调栈
-// 时间: O()
-// 空间: O()
-function nextGreaterElements(nums: number[]): number[] {}
+// 时间: O(2n)
+// 空间: O(2n)
+function nextGreaterElements(nums: number[]): number[] {
+  const len = nums.length;
+  const ans: number[] = new Array(len).fill(-1);
+  // 栈中保存下标，从栈底到栈顶对应下标的数是单调不升的
+  const stack: number[] = [];
+
+  // 因为是循环数组，所以只从0遍历到len-1是不够的
+  // 每个位置i都需要从i+1遍历到i-1的位置，在这个区间内找到下一个更大的值
+  // 但是不能超过len*2-1，最多遍历两遍，如果遍历两遍都找不到的话，就是-1
+  for (let i = 0; i < len * 2 - 1; i++) {
+    // 将所有大于nums[i]的数都弹出
+    // 这些弹出的下标对应的下一个更大的数，就是nums[i]
+    while (
+      stack.length > 0 &&
+      nums[i % len] > nums[stack[stack.length - 1] % len]
+    ) {
+      ans[(stack.pop() as number) % len] = nums[i % len];
+    }
+    stack.push(i);
+  }
+
+  return ans;
+}
 // @lc code=end
