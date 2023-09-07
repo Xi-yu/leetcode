@@ -36,68 +36,60 @@
  *
  *
  * 提示：
- *
- *
- * 1
- *
- *
+ * 1 <= n <= 2^31 - 1
  */
 
 // @lc code=start
-// 单调栈：是一个下标对应数字不递减的单调栈；+ 局部排序
-// 倒叙遍历
-// 如果当前数字大于等于栈顶下标对应元素，就push下标进栈
-// 如果当前数字小于栈顶元素，就将两个下标对应的数字调换，然后组成一个数字，就可以得到答案
-// 时间: O(logn+n(logn)^2+logn)
-// 空间: O(2logn)
+// 将数字转成数组，然后找改数组的【31.下一个排列】
+// 双指针：1、找到【较小数】下标min；2、找到【较大数】下标max；3、交换min和max对应的数字；4、对[min+1,len)升序排序；
+// 将数组转为数字，即为答案
+// 时间: O(5logn)
+// 空间: O(logn)
 function nextGreaterElement(n: number): number {
-  const max = Math.pow(2, 31) - 1;
+  const MAX = Math.pow(2, 31) - 1;
 
-  // 将n的每位数字倒序拆成一个数组
+  // 将数字转为数组
   const nums: number[] = [];
   let cur = n;
   while (cur > 0) {
-    nums.push(cur % 10);
+    nums.unshift(cur % 10);
     cur = Math.floor(cur / 10);
   }
 
-  // 单调栈：是一个下标对应数字不递减的单调栈
-  const stack: number[] = [];
-  // 先将下标0 push进去
-  stack.push(0);
-  // 保存交换的下标
-  let j = -1;
-  // 从下标1开始遍历
-  for (let i = 1; i < nums.length; i++) {
-    if (nums[i] >= nums[stack[stack.length - 1]]) {
-      // 如果当前数字大于等于栈顶下标对应元素，就push下标进栈
-      stack.push(i);
-    } else {
-      // 如果当前数字小于栈顶元素，就将两个下标对应的数字调换
-      while (stack.length > 0 && nums[i] < nums[stack[stack.length - 1]]) {
-        j = stack.pop() as number;
-      }
-      [nums[i], nums[j]] = [nums[j], nums[i]];
-      //将i左边的数重新降序排列
-      const temp = nums.slice(0, i).sort((a, b) => b - a);
-      for (let k = 0; k < i; k++) {
-        nums[k] = temp[k];
-      }
+  // 双指针，找到min和max的位置
+  const len = nums.length;
+  let min = len - 2;
+  for (; min >= 0; min--) {
+    if (nums[min] < nums[min + 1]) {
+      break;
+    }
+  }
+  let max = len - 1;
+  for (; min >= 0 && max > min + 1; max--) {
+    if (nums[max] > nums[min]) {
       break;
     }
   }
 
-  if (j === -1) {
-    // 说明没有找到可以交换的下标
+  // 交换min和max对应的数字
+  if (min >= 0) {
+    [nums[min], nums[max]] = [nums[max], nums[min]];
+  } else {
+    // 已经是最大排列了
     return -1;
   }
 
-  // 将nums合并起来
-  for (let i = nums.length - 1; i >= 0; i--) {
-    // cur此时为0，就没有再声明变量了，用cur正合适
+  // 将[min+1,len)从降序转为升序
+  for (let i = min + 1, j = len - 1; i < j; i++, j--) {
+    [nums[i], nums[j]] = [nums[j], nums[i]];
+  }
+
+  // 将数组转为数字
+  // cur为0，正好不用再声明变量了
+  for (let i = 0; i < len; i++) {
     cur = cur * 10 + nums[i];
-    if (cur > max) {
-      // 超过32位整数
+    if (cur > MAX) {
+      // 超过32位整数了
       return -1;
     }
   }
