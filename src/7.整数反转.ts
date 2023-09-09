@@ -63,19 +63,29 @@
 // 时间: O(log|x|)
 // 空间: O(1)
 function reverse(x: number): number {
-  const min = -Math.pow(2, 31);
-  const max = Math.pow(2, 31) - 1;
-  let ans: number = 0;
-  const isNegative = x < 0;
-  x = Math.abs(x);
-  while (x > 0) {
-    ans = ans * 10 + (x % 10);
-    if (ans > max || ans < min) {
-      ans = 0;
-      break;
+  // 不能超过[-2147483648,2147483647]的范围
+  const MAX = Math.pow(2, 31); // 2147483648
+
+  let ans = 0;
+  let cur = Math.abs(x);
+  const isMinus = cur !== x;
+
+  while (cur > 0) {
+    // 因为题目要求不能使用64位整数
+    // 所以不能先更新ans，再判断ans是否超过32位整数范围
+    // 所以要先判断
+    if (Math.floor(MAX / 10) < ans) {
+      // ans*10超过了范围
+      return 0;
     }
-    x = Math.floor(x / 10);
+    if (MAX - ans * 10 < cur % 10) {
+      // ans * 10 + (cur % 10)超过了范围
+      return 0;
+    }
+    ans = ans * 10 + (cur % 10);
+    cur = Math.floor(cur / 10);
   }
-  return isNegative ? -ans : ans;
+
+  return isMinus ? -ans : ans;
 }
 // @lc code=end
