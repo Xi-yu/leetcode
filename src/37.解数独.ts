@@ -154,20 +154,20 @@ function solveSudoku(board: string[][]): void {
       const digitStr = String(digit);
       const digitBinary = 1 << (digit - 1);
       if (
-        ~(rows[i] | ~digitBinary) !== 0 &&
-        ~(cols[j] | ~digitBinary) !== 0 &&
-        ~(blocks[Math.floor(i / 3)][Math.floor(j / 3)] | ~digitBinary) !== 0
+        ((rows[i] | cols[j] | blocks[Math.floor(i / 3)][Math.floor(j / 3)]) &
+          digitBinary) ===
+        0
       ) {
-        rows[i] |= digitBinary;
-        cols[j] |= digitBinary;
-        blocks[Math.floor(i / 3)][Math.floor(j / 3)] |= digitBinary;
+        rows[i] ^= digitBinary;
+        cols[j] ^= digitBinary;
+        blocks[Math.floor(i / 3)][Math.floor(j / 3)] ^= digitBinary;
         board[i][j] = digitStr;
         if (backtrack(index + 1)) {
           return true;
         }
-        rows[i] &= ~digitBinary;
-        cols[j] &= ~digitBinary;
-        blocks[Math.floor(i / 3)][Math.floor(j / 3)] &= ~digitBinary;
+        rows[i] ^= digitBinary;
+        cols[j] ^= digitBinary;
+        blocks[Math.floor(i / 3)][Math.floor(j / 3)] ^= digitBinary;
       }
     }
     return false;
