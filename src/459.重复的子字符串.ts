@@ -57,7 +57,7 @@
 // 暴力枚举
 // 时间: O(n^2)
 // 空间: O(1)
-function repeatedSubstringPattern(s: string): boolean {
+function repeatedSubstringPattern1(s: string): boolean {
   const n = s.length;
 
   for (let i = 1; i <= n / 2; i++) {
@@ -78,5 +78,12 @@ function repeatedSubstringPattern(s: string): boolean {
   }
 
   return false;
+}
+// s+s移除收尾字符后，包含s，就是【重复的子字符串】
+// 时间: O(2n)
+// 空间: O(1)
+function repeatedSubstringPattern(s: string): boolean {
+  const doubleS = s.slice(1) + s.slice(0, s.length - 1);
+  return doubleS.includes(s);
 }
 // @lc code=end
