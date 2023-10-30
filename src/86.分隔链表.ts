@@ -59,44 +59,25 @@
 // 时间: O(n)
 // 空间: O(1)
 function partition(head: ListNode | null, x: number): ListNode | null {
-  let small: ListNode | null = null; // 小于x的节点组成的链表
-  let smallHead: ListNode | null = null; // 小于x的节点组成的链表
-  let large: ListNode | null = null; // 大于等于x的节点组成的链表
-  let largeHead: ListNode | null = null; // 大于等于x的节点组成的链表
+  const smallHead = new ListNode(0, head);
+  let small = smallHead;
+  const largeHead = new ListNode(0, head);
+  let large = largeHead;
   let cur = head;
 
   while (cur) {
     if (cur.val < x) {
-      if (!small) {
-        small = new ListNode(cur.val);
-        smallHead = small;
-      } else {
-        small.next = new ListNode(cur.val);
-        small = small.next;
-      }
+      small.next = cur;
+      small = small.next;
     } else {
-      if (!large) {
-        large = new ListNode(cur.val);
-        largeHead = large;
-      } else {
-        large.next = new ListNode(cur.val);
-        large = large.next;
-      }
+      large.next = cur;
+      large = large.next;
     }
     cur = cur.next;
   }
-  if (small) {
-    small.next = largeHead;
-  }
+  large.next = null;
+  small.next = largeHead.next;
 
-  return smallHead || largeHead;
+  return smallHead.next;
 }
 // @lc code=end
-// [1,4,3,2,5,2]
-// x=3
-// head=1
-// cur=2
-// small=1 // [1]
-// smallHead=1
-// large=3 // [4,3]
-// largeHead=4
